@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import cors from "cors";
 
 const app = express();
@@ -11,7 +11,6 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 
 app.use(express.static("public"));
 
-//CORS Config
 // cors configurations
 app.use(
   cors({
@@ -22,8 +21,9 @@ app.use(
   }),
 );
 
-app.get("/", (_req: Request, res: Response) => {
-  res.send("Hello, World!");
-});
+//import the routes
+import routes from "./routes/index";
+
+app.use("/", routes);
 
 export default app;
