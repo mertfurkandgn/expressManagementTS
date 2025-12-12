@@ -8,7 +8,10 @@ export async function hashPassword(password: string, rounds = 10) {
   return await bcrypt.hash(password, rounds);
 }
 
-export async function comparePassword(password: string, hashedPassword: string) { 
+export async function comparePassword(
+  password: string,
+  hashedPassword: string,
+) {
   if (!password?.trim() || !hashedPassword?.trim()) {
     throw new Error("Undefined password.");
   }
