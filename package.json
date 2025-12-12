@@ -29,11 +29,14 @@
   },
   "dependencies": {
     "@types/cors": "^2.8.19",
+    "@types/nodemailer": "^7.0.4",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.44.7",
     "express": "^5.1.0",
+    "mailgen": "^2.0.32",
+    "nodemailer": "^7.0.11",
     "pg": "^8.16.3"
   }
 }
