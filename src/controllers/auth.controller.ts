@@ -6,6 +6,7 @@ import {
   createUser,
   getUserById,
   updateUserRefreshToken,
+  getUserByEmail,
   updateUserByColumn,
 } from "src/utils/users";
 import { ApiError } from "src/utils/api-error";
@@ -15,6 +16,7 @@ import {
   generateTemporaryToken,
 } from "src/utils/jwtoken";
 import { emailVerificationMailgenContent, sendEmail } from "src/utils/mail";
+import { comparePassword } from "src/utils/password";
 
 export const healthCheck = asyncHandler(async (req: Request, res: Response) => {
   res.status(200).json(new ApiResponse(200, { message: "Server is running" }));
@@ -78,6 +80,27 @@ const register = asyncHandler(async (req: Request, res: Response) => {
   res
     .status(201)
     .json(new ApiResponse(201, { message: "User registered successfully",data:user.username }));
+});
+
+
+const login =  asyncHandler(async (req: Request, res: Response) => { 
+
+  const {email,password,username} = req.body;
+  if (!email) {
+    throw new ApiError(400, " email is required");
+  }
+  const user = await getUserByEmail(email);
+  
+  if (!user) {
+    throw new ApiError(400, "User does not exists");
+  }
+
+ const isValid = await comparePassword(password, user.password);
+  if (!isValid) {
+    return res.status(401).json({ message: "Invalid credentials" });
+  }
+
+  
 });
 
 export{register};

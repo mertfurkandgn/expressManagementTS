@@ -28,6 +28,15 @@ export const getUserById = async (id: string) => {
   return user[0] || false;
 };
 
+export const getUserByEmail = async (email: string) => {
+  const user = await db
+    .select()
+    .from(usersTable)
+    .where(eq(usersTable.email, email))
+    .limit(1);
+
+  return user[0] || false;
+};
 //insert functions
 export const createUser = async (data: CreateUserInput) => {
   const [user] = await db.insert(usersTable).values(data).returning();

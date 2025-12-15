@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 const app = express();
 
@@ -20,6 +21,12 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
+
+//Cookie Parser
+app.use(cookieParser())
+
+
+
 
 //import the routes
 import routes from "./routes/index";
