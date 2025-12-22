@@ -23,10 +23,7 @@ app.use(
 );
 
 //Cookie Parser
-app.use(cookieParser())
-
-
-
+app.use(cookieParser());
 
 //import the routes
 import routes from "./routes/index";

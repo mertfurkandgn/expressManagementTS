@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, and, gt } from "drizzle-orm";
 import { db } from "../db/index.js";
 import { usersTable } from "../models/user.model.js";
 import { InferInsertModel } from "drizzle-orm";
@@ -13,6 +13,20 @@ export const getUserByColumn = async (column: UserColumn, value: any) => {
     .select()
     .from(usersTable)
     .where(eq(usersTable[column], value))
+    .limit(1);
+
+  return user[0] || false;
+};
+export const getUserByTokenAndExpiry = async (token: string, expiry: Date) => {
+  const user = await db
+    .select()
+    .from(usersTable)
+    .where(
+      and(
+        eq(usersTable.emailVerificationToken, token),
+        gt(usersTable.emailVerificationExpiry, expiry),
+      ),
+    )
     .limit(1);
 
   return user[0] || false;
@@ -55,11 +69,10 @@ export const updateUserRefreshToken = async (
     .where(eq(usersTable.id, userId));
 };
 
-export const updateUserByColumn = async (data: any, id: string) => {
+export const updateUserById = async (data: any, id: string) => {
   try {
-     await db.update(usersTable).set(data).where(eq(usersTable.id, id));
+    await db.update(usersTable).set(data).where(eq(usersTable.id, id));
   } catch (error) {
     return "error not update user";
   }
- 
 };

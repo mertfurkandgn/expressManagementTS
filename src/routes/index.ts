@@ -7,5 +7,4 @@ router.use("/health", healthRoutes);
 
 router.use("/auth", authRoutes);
 
-
 export default router;
