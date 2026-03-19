@@ -31,7 +31,20 @@ export const getUserByTokenAndExpiry = async (token: string, expiry: Date) => {
 
   return user[0] || false;
 };
+export const getUserByForgotToken  = async (token: string, expiry: Date) => {
+  const user = await db
+    .select()
+    .from(usersTable)
+    .where(
+      and(
+        eq(usersTable.forgotPasswordToken, token),
+        gt(usersTable.forgotPasswordExpiry, expiry),
+      ),
+    )
+    .limit(1);
 
+  return user[0] || false;
+};
 export const getUserById = async (id: string) => {
   const user = await db
     .select()

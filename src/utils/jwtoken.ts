@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
-const expiry = Number(process.env.ACCESS_TOKEN_EXPIRY) || 86400;
+const refreshExpiry = Number(process.env.REFRESH_TOKEN_EXPIRY) || 604800;
+const accessExpiry = Number(process.env.ACCESS_TOKEN_EXPIRY) || 86400;
 
 export function generateAccessToken(
   id: string,
@@ -8,13 +9,13 @@ export function generateAccessToken(
   username: string,
 ) {
   return jwt.sign({ id, email, username }, process.env.ACCESS_TOKEN_SECRET!, {
-    expiresIn: expiry,
+    expiresIn: accessExpiry,
   });
 }
 
 export function generateRefreshToken(id: string) {
-  return jwt.sign({ id }, process.env.ACCESS_TOKEN_SECRET!, {
-    expiresIn: expiry,
+  return jwt.sign({ id }, process.env.REFRESH_TOKEN_SECRET!, {
+    expiresIn: refreshExpiry,
   });
 }
 

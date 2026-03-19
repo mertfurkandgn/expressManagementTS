@@ -12,6 +12,7 @@ import {
   getUserByEmail,
   updateUserById,
   getUserByTokenAndExpiry,
+  getUserByForgotToken,
 } from "src/utils/users";
 import { ApiError } from "src/utils/api-error";
 import {
@@ -58,7 +59,6 @@ const register = asyncHandler(async (req: Request, res: Response) => {
     email: email,
     username: username,
     password: hashedPassword,
-    role: role,
   };
 
   const user = await createUser(userData);
@@ -290,8 +290,8 @@ const forgotPasswordRequest = asyncHandler(
     const { unHashedToken, hashedToken, tokenExpiry } =
       generateTemporaryToken();
     const hashedData = {
-      emailVerificationToken: hashedToken,
-      emailVerificationExpiry: tokenExpiry,
+      forgotPasswordToken: hashedToken,
+      forgotPasswordExpiry: tokenExpiry,
     };
 
     await updateUserById(hashedData, user.id);
@@ -327,7 +327,7 @@ const resetForgotPassword = asyncHandler(
       .update(resetToken)
       .digest("hex");
 
-    const user = await getUserByTokenAndExpiry(hashedToken, new Date());
+    const user = await getUserByForgotToken(hashedToken, new Date());
 
     if (!user) {
       throw new ApiError(489, "Token is invalid or expired");
@@ -336,8 +336,8 @@ const resetForgotPassword = asyncHandler(
     const hashedPassword = await hashPassword(newPassword);
 
     const updateData = {
-      emailVerificationToken: undefined,
-      emailVerificationExpiry: undefined,
+      forgotPasswordToken: null,
+      forgotPasswordExpiry: null,
       password: hashedPassword,
     };
 
@@ -359,8 +359,8 @@ const changeCurrentPassword = asyncHandler(
     if (!isPasswordValid) {
       throw new ApiError(400, "Invalid old Password");
     }
-
-    const data = { password: newPassword };
+    const hashedPass =  await hashPassword(newPassword);
+    const data = { password: hashedPass  };
     await updateUserById(data, user.id);
 
     return res

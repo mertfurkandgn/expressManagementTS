@@ -22,7 +22,7 @@ export const verifyJWT = asyncHandler(
     try {
       const decodedToken = jwt.verify(
         token,
-        process.env.JWT_SECRET!,
+        process.env.ACCESS_TOKEN_SECRET!,
       ) as CustomJwtPayload;
 
       const user = await getUserById(decodedToken.id);

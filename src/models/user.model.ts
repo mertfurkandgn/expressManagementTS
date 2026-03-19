@@ -19,6 +19,7 @@ export const usersTable = pgTable("users", {
   forgotPasswordToken: text(),
   forgotPasswordExpiry: timestamp(),
   emailVerificationToken: text(),
+  role: varchar({length:32}).notNull().default("member"),
   emailVerificationExpiry: timestamp(),
   createdAt: timestamp().defaultNow().notNull(),
   updatedAt: timestamp().defaultNow().notNull(),
