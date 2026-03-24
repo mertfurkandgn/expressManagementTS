@@ -18,8 +18,8 @@ async function sendEmail(options: any) {
     host: "sandbox.smtp.mailtrap.io",
     port: 2525,
     auth: {
-      user: "3c70b7cbcc7f45",
-      pass: "0d704febe8aba0",
+      user: process.env.MAILTRAP_USER,
+      pass:  process.env.MAILTRAP_PASS,
     },
   });
 

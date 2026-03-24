@@ -23,7 +23,7 @@ const userRegisterValidator = () => {
 
 const userLoginValidator = () => {
   return [
-    body("email").optional().isEmail().withMessage("Email is invalid"),
+    body("email").notEmpty().isEmail().withMessage("Email is invalid"),
     body("password").notEmpty().withMessage("Password is required"),
   ];
 };
@@ -31,7 +31,7 @@ const userLoginValidator = () => {
 const userChangeCurrentPasswordValidator = () => {
   return [
     body("oldPassword").notEmpty().withMessage("Old password is required"),
-    body("newPassword").notEmpty().withMessage("New password is required"),
+    body("newPassword").notEmpty().withMessage("New password is required").isLength({ min: 8 }),
   ];
 };
 

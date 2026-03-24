@@ -98,10 +98,15 @@ const login = asyncHandler(async (req: Request, res: Response) => {
   }
   const user = await getUserByEmail(email);
 
+ 
   if (!user) {
     throw new ApiError(400, "User does not exists");
   }
 
+  if(user.isEmailVerified === false){
+    throw new ApiError(403, "Please verify your email first");
+  }
+  
   const isValid = await comparePassword(password, user.password);
   if (!isValid) {
     return res.status(401).json({ message: "Invalid credentials" });
@@ -133,13 +138,14 @@ const login = asyncHandler(async (req: Request, res: Response) => {
 });
 
 const logout = asyncHandler(async (req: Request, res: Response) => {
-  const user =  await  getUserById(req.user.id);
+  if (!req.user) throw new ApiError(401, "Unauthorized");
+  const user = await getUserById(req.user.id);
   if (!user) {
     throw new ApiError(400, "User not found.");
   }
   const updateData = { refreshToken: "" };
 
-  const updatedUser = await  updateUserById(updateData, req.user.id);
+  await updateUserById(updateData, req.user.id);
 
   const options = {
     httpOnly: true,
@@ -173,8 +179,8 @@ const verifyEmail = asyncHandler(async (req: Request, res: Response) => {
   }
 
   const updateData = {
-    emailVerificationToken: undefined,
-    emailVerificationExpiry: undefined,
+    emailVerificationToken: null,
+    emailVerificationExpiry: null,
     isEmailVerified: true,
   };
   await updateUserById(updateData, user.id);
@@ -190,7 +196,8 @@ const verifyEmail = asyncHandler(async (req: Request, res: Response) => {
 });
 const resendEmailVerification = asyncHandler(
   async (req: Request, res: Response) => {
-    const user = await getUserById(req.user?.id);
+    if (!req.user) throw new ApiError(401, "Unauthorized");
+    const user = await getUserById(req.user.id);
 
     if (!user) {
       throw new ApiError(404, "User does not exist");
@@ -351,9 +358,10 @@ const resetForgotPassword = asyncHandler(
 
 const changeCurrentPassword = asyncHandler(
   async (req: Request, res: Response) => {
+    if (!req.user) throw new ApiError(401, "Unauthorized");
     const { oldPassword, newPassword } = req.body;
 
-    const user = await getUserById(req.user?.id);
+    const user = await getUserById(req.user.id);
     const isPasswordValid = await comparePassword(oldPassword, user.password);
 
     if (!isPasswordValid) {
