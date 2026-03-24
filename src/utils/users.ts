@@ -83,9 +83,7 @@ export const updateUserRefreshToken = async (
 };
 
 export const updateUserById = async (data: any, id: string) => {
-  try {
+  
     await db.update(usersTable).set(data).where(eq(usersTable.id, id));
-  } catch (error) {
-    return "error not update user";
-  }
+  
 };

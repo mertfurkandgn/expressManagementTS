@@ -37,7 +37,7 @@ const generateAccessAndRefreshTokens = async (userId: string) => {
     const accessToken = generateAccessToken(userId, user.email, user.username);
     const refreshToken = generateRefreshToken(userId);
 
-    updateUserRefreshToken(userId, refreshToken);
+    await updateUserRefreshToken(userId, refreshToken);
     return { accessToken, refreshToken };
   } catch (error) {}
   throw new ApiError(
@@ -133,13 +133,13 @@ const login = asyncHandler(async (req: Request, res: Response) => {
 });
 
 const logout = asyncHandler(async (req: Request, res: Response) => {
-  const user = getUserById(req.user.id);
+  const user =  await  getUserById(req.user.id);
   if (!user) {
     throw new ApiError(400, "User not found.");
   }
   const updateData = { refreshToken: "" };
 
-  const updatedUser = updateUserById(updateData, req.user.id);
+  const updatedUser = await  updateUserById(updateData, req.user.id);
 
   const options = {
     httpOnly: true,
@@ -330,7 +330,7 @@ const resetForgotPassword = asyncHandler(
     const user = await getUserByForgotToken(hashedToken, new Date());
 
     if (!user) {
-      throw new ApiError(489, "Token is invalid or expired");
+      throw new ApiError(400, "Token is invalid or expired");
     }
 
     const hashedPassword = await hashPassword(newPassword);
