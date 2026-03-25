@@ -16,7 +16,7 @@ const userRegisterValidator = () => {
       .withMessage("Username must be in lower case")
       .isLength({ min: 3 })
       .withMessage("Username must be at least 3 characters long"),
-    body("password").trim().notEmpty().withMessage("Password is required"),
+    body("password").trim().notEmpty().withMessage("Password is required").isLength({ min: 8 }),
     body("fullName").optional().trim(),
   ];
 };
@@ -46,7 +46,7 @@ const userForgotPasswordValidator = () => {
 };
 
 const userResetForgotPasswordValidator = () => {
-  return [body("newPassword").notEmpty().withMessage("Password is required")];
+  return [body("newPassword").notEmpty().withMessage("Password is required").isLength({ min: 8 })];
 };
 
 const createProjectValidator = () => {
