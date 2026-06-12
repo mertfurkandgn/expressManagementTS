@@ -23,7 +23,7 @@ export const usersTable = pgTable("users", {
   role: varchar({length:32}).notNull().default("member"),
   emailVerificationExpiry: timestamp(),
   createdAt: timestamp().defaultNow().notNull(),
-  updatedAt: timestamp().defaultNow().notNull(),
+  updatedAt: timestamp().defaultNow().notNull().$onUpdateFn(() => new Date()),
 });
 
 export type User = InferSelectModel<typeof usersTable>;

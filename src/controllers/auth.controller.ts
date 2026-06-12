@@ -39,12 +39,13 @@ const generateAccessAndRefreshTokens = async (userId: string) => {
 
     await updateUserRefreshToken(userId, refreshToken);
     return { accessToken, refreshToken };
-  } catch (error) {}
-  throw new ApiError(
-    500,
-    "Something went wrong while generating access token ",
-    [],
-  );
+  } catch (error) {
+    throw new ApiError(
+      500,
+      "Something went wrong while generating access token",
+      [],
+    );
+  }
 };
 const register = asyncHandler(async (req: Request, res: Response) => {
   const { email, username, password, role } = req.body;
@@ -128,7 +129,7 @@ const login = asyncHandler(async (req: Request, res: Response) => {
       new ApiResponse(
         200,
         {
-          user: username,
+          user: user.username,
           accessToken,
           refreshToken,
         },
